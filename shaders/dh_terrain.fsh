@@ -12,10 +12,22 @@ in vec4 blockColor;
 in vec2 lightMapCoordinates;
 in vec3 viewSpacePosition;
 
+vec3 linearColorSpace(in vec3 lighting) {
+    return pow(lighting, vec3(2.2));
+}
+
+vec4 linearColorSpace(in vec4 lighting) {
+    return pow(lighting, vec4(2.2));
+}
+
+vec4 linearColorSpaceInverse(in vec4 lighting) {
+    return pow(lighting, vec4(1.0 / 2.2));
+}
+
 void main() {
     // lighting
-    vec3 lightColor = texture(lightmap, lightMapCoordinates).rgb;
-    vec4 outputColorData = blockColor;
+    vec3 lightColor = linearColorSpace(texture(lightmap, lightMapCoordinates).rgb);
+    vec4 outputColorData = linearColorSpace(blockColor);
     vec3 outputColor = outputColorData.rgb * lightColor;
 
     // transparency
@@ -37,11 +49,11 @@ void main() {
     vec3 viewSpacePlayerPosition = vec3(0);
     vec3 viewSpaceFragPosition = viewSpacePosition;
     float distanceFromCamera = distance(viewSpacePlayerPosition, viewSpaceFragPosition);
-    float maxFogDistance = 4096.0;
-    float minFogDistance = 512.0;
+    float maxFogDistance = 8192.0;
+    float minFogDistance = 2048.0;
     float fogBlendColor = (distanceFromCamera - minFogDistance) / (maxFogDistance - minFogDistance); // normalize
     fogBlendColor = clamp(fogBlendColor, 0.0, 1.0);
     outputColor = mix(outputColor, fogColor, fogBlendColor);
 
-    outColor0 = vec4(outputColor, transparency);
+    outColor0 = linearColorSpaceInverse(vec4(outputColor, transparency));
 }
