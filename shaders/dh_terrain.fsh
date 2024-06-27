@@ -25,10 +25,7 @@ vec4 linearColorSpaceInverse(in vec4 lighting) {
 }
 
 void main() {
-    // lighting
-    vec3 lightColor = linearColorSpace(texture(lightmap, lightMapCoordinates).rgb);
     vec4 outputColorData = linearColorSpace(blockColor);
-    vec3 outputColor = outputColorData.rgb * lightColor;
 
     // transparency
     float transparency = outputColorData.a;
@@ -36,6 +33,10 @@ void main() {
     if (transparency < 0.5) { // 0.5 boolean
         discard;
     }
+
+    // lighting
+    vec3 lightColor = linearColorSpace(texture(lightmap, lightMapCoordinates).rgb);
+    vec3 outputColor = outputColorData.rgb * lightColor;
 
     // render distant horizons under normal blocks
     vec2 texCoord = gl_FragCoord.xy / vec2(viewWidth, viewHeight);

@@ -22,10 +22,7 @@ vec4 linearColorSpaceInverse(in vec4 lighting) {
 }
 
 void main() {
-    // lighting
-    vec3 lightColor = linearColorSpace(texture(lightmap, lightMapCoordinates).rgb);
     vec4 outputColorData = linearColorSpace(texture(gtexture, texCoord));
-    vec3 outputColor = outputColorData.rgb * linearColorSpace(foliageColor) * lightColor;
 
     // transparency
     float transparency = outputColorData.a;
@@ -33,6 +30,10 @@ void main() {
     if (transparency < 0.5) { // 0.5 boolean
         discard;
     }
+
+    // lighting
+    vec3 lightColor = linearColorSpace(texture(lightmap, lightMapCoordinates).rgb);
+    vec3 outputColor = outputColorData.rgb * linearColorSpace(foliageColor) * lightColor;
 
     outColor0 = linearColorSpaceInverse(vec4(outputColor, transparency));
 }

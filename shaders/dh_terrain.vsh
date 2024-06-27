@@ -6,7 +6,7 @@ out vec3 viewSpacePosition;
 
 void main() {
     blockColor = gl_Color;
-    lightMapCoordinates = (gl_TextureMatrix[1] * gl_MultiTexCoord2).xy;
+    lightMapCoordinates = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
     viewSpacePosition = (gl_ModelViewMatrix * gl_Vertex).xyz;
 
     gl_Position = ftransform();
